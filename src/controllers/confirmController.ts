@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { MeasureModel } from '../models/measureModel';
+import { MeasureModel } from '../models/measurementModel';
 
 export const confirmController = async (req: Request, res: Response) => {
     const { measure_uuid, confirmed_value } = req.body;

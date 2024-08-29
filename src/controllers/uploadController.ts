@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { MeasureModel } from '../models/measureModel';
+import { MeasurementModel } from '../models/measurementModel';
 import { validateBase64 } from '../utils/validateBase64';
 import { llmService } from '../services/llmService';
 import { v4 as uuidv4 } from 'uuid';
@@ -11,7 +11,7 @@ export const uploadController = async (req: Request, res: Response) => {
         return res.status(400).json({ error: 'Invalid base64 image' });
     }
 
-    const existingMeasure = await MeasureModel.findOne({
+    const existingMeasure = await MeasurementModel.findOne({
         customer_code,
         measure_type,
         measure_datetime: {
@@ -26,7 +26,7 @@ export const uploadController = async (req: Request, res: Response) => {
 
     try {
         const llmResponse = await llmService.getMeasureFromImage(image);
-        const measure = new MeasureModel({
+        const measure = new MeasurementModel({
             customer_code,
             measure_datetime,
             measure_type,

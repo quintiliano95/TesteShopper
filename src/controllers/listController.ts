@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { MeasureModel } from '../models/measureModel';
+import { MeasureModel } from '../models/measurementModel';
 
 export const listController = async (req: Request, res: Response) => {
     const { customer_code } = req.params;

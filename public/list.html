@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listagem de Leituras</title>
+</head>
+<body>
+    <h1>Listagem de Leituras</h1>
+    <form id="list-form">
+        <label for="customer_code">Código do Cliente:</label>
+        <input type="text" id="customer_code" name="customer_code" required><br><br>
+
+        <label for="measure_type">Tipo de Medida (Opcional):</label>
+        <select id="measure_type" name="measure_type">
+            <option value="">Todos</option>
+            <option value="WATER">Água</option>
+            <option value="GAS">Gás</option>
+        </select><br><br>
+
+        <button type="submit">Listar Leituras</button>
+    </form>
+
+    <ul id="measurements-list"></ul>
+
+    <script>
+        document.getElementById('list-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const customerCode = document.getElementById('customer_code').value;
+            const measureType = document.getElementById('measure_type').value;
+
+            let url = `/${customerCode}/list`;
+            if (measureType) {
+                url += `?measure_type=${measureType}`;
+            }
+
+            const response = await fetch(url);
+            const measurements = await response.json();
+
+            const listElement = document.getElementById('measurements-list');
+            listElement.innerHTML = '';
+            measurements.forEach(measure => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `Data: ${measure.measure_datetime}, Tipo: ${measure.measure_type}, Valor: ${measure.value}`;
+                listElement.appendChild(listItem);
+            });
+        });
+    </script>
+</body>
+</html>

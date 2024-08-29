@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload de Leitura</title>
+</head>
+<body>
+    <h1>Upload de Leitura de Consumo</h1>
+    <form id="upload-form">
+        <label for="customer_code">Código do Cliente:</label>
+        <input type="text" id="customer_code" name="customer_code" required><br><br>
+
+        <label for="measure_type">Tipo de Medida:</label>
+        <select id="measure_type" name="measure_type" required>
+            <option value="WATER">Água</option>
+            <option value="GAS">Gás</option>
+        </select><br><br>
+
+        <label for="measure_datetime">Data e Hora da Medida:</label>
+        <input type="datetime-local" id="measure_datetime" name="measure_datetime" required><br><br>
+
+        <label for="image">Selecione a Imagem do Medidor:</label>
+        <input type="file" id="image" name="image" accept="image/*" required><br><br>
+
+        <button type="submit">Enviar</button>
+    </form>
+
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const imageFile = document.getElementById('image').files[0];
+            const reader = new FileReader();
+
+            reader.onloadend = async function() {
+                const base64String = reader.result.split(',')[1];
+
+                const payload = {
+                    image: base64String,
+                    customer_code: document.getElementById('customer_code').value,
+                    measure_type: document.getElementById('measure_type').value,
+                    measure_datetime: document.getElementById('measure_datetime').value
+                };
+
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                alert(`Medida reconhecida: ${result.recognized_value}`);
+            };
+
+            reader.readAsDataURL(imageFile);
+        });
+    </script>
+</body>
+</html>
